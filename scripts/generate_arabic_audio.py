@@ -5,6 +5,7 @@ Audio is generated during GitHub Actions and served as static MP3s.
 import asyncio
 from pathlib import Path
 import edge_tts
+from gtts import gTTS
 
 OUT=Path("audio/ar");OUT.mkdir(parents=True,exist_ok=True)
 PHRASES={
@@ -22,7 +23,9 @@ async def one(name,text,sem):
                 await edge_tts.Communicate(text,voice="ar-AE-FatimaNeural",rate="-5%").save(str(OUT/(name+".mp3")))
                 return
             except Exception:
-                if attempt==2:raise
+                if attempt==2:
+                    await asyncio.to_thread(lambda: gTTS(text=text,lang='ar',slow=False).save(str(OUT/(name+'.mp3'))))
+                    return
                 await asyncio.sleep(2*(attempt+1))
 async def main():
     sem=asyncio.Semaphore(3)
