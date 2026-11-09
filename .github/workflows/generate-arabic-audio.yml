@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install edge-tts==7.2.7
+      - run: pip install edge-tts==7.2.7 gTTS==2.5.4
       - run: python scripts/generate_arabic_audio.py
       - name: Commit audio files
         run: |
