@@ -1,0 +1,25 @@
+name: Generate Arabic voice clips
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/generate_arabic_audio.py
+      - .github/workflows/generate-arabic-audio.yml
+permissions:
+  contents: write
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install edge-tts==7.2.7
+      - run: python scripts/generate_arabic_audio.py
+      - name: Commit audio files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audio/ar
+          git diff --cached --quiet || (git commit -m "Generate Arabic audio alerts" && git push)
